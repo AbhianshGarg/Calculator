@@ -1,0 +1,4 @@
+length of general box = 165
+width of general box = 70
+
+space = 17
