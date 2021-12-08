@@ -13,11 +13,11 @@ line_list = []
 wn.bgpic('calc.png')
 wn.setup(570, 696)
 cover.ht()
+
 t.penup()
 t.ht()
 t.pencolor('white')
-t.goto(-250, 150)
-startpos = (-250,150)
+t.goto(195, 150)
 t.pendown()
 
 #Used to cover 0 when button pressed.
@@ -31,19 +31,24 @@ cover.pendown()
 
 ##Operator Function
 
-def write(button):
+def write(button, mult):
+    t.pu()
+    t.goto(195 - 55*mult, 150)
+    t.pd() 
     t.write(button, font=("Arial", 74, "bold"))
-    t.penup()
-    t.fd(55)
-    t.pendown() 
+
+def screen_check(mult):
+  if 195 - 55*mult < -300:
+    return True
+  else:
+    return False
 
     
 def button_pressed(x, y):
-    global button
+    global button, line_list
     if 46 - 55*0 > y > 46 - 55*1:
         if -290 + 115*0 < x < -290 + 115*1:
             button = '1/x'
-            
         elif -290 + 115*1 < x < -290 + 115*2:
             button = 'Natural Logarithim'
         elif -290 + 115*2 < x < -290 + 115*3:
@@ -124,37 +129,33 @@ def button_pressed(x, y):
             button = '.' #Decimal
         elif -290 + 115*4 < x < -290 + 115*5:
             button = '=' #Equal
-            
-    try:
-        if t.xcor() <= 140:
-          if button == 'Clear':
-            line_list.clear()
-            t.clear()
-            t.pu()
-            t.goto(startpos)
-            t.pd()
 
-          else:
-            if button != '':
-              #print(line_list)
-              line_list.append(str(button))
-              write(button)
-            button = ''
-        else:
-          button = '='
-          line_list.append(button)
-          write(button)
-  
-    except NameError:
-        print('')
-    for char in line_list:
-        if char == '=':
-            line_list.pop()
-            sum = eval(''.join(line_list))
-            print(sum)
-            t.clear()
-            write(sum)
+    line_list.append(str(button))
+    #print(line_list)
+    print(line_list)
+    t.clear()
+    mult1 = 0
+    for char in reversed(line_list):
+      write(char, mult1)
+      mult1 += 1
+      screencheck = screen_check(mult1)
 
+      mult2 = 0
+      if screencheck == True:
+        t.clear()
+        equation = ''.join(line_list)
+        line_list = []
+        try:
+          equation = int(equation)
+          break
+        except ValueError:
+          equation = str(eval(equation))
+          print(equation)
+        for tot in reversed(equation):
+          write(tot, mult2)
+          mult2 += 1 
+
+# Fix 1280+
 
 wn.onclick(button_pressed)
 wn.mainloop()
