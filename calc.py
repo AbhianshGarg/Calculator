@@ -1,5 +1,4 @@
 ##imports
-##imports
 import turtle as trtl
 import math
 
@@ -46,11 +45,50 @@ def screen_check(mult):
   else:
     return False
 
+def calc_factorial(char):
+  while char > 0:
+    return char * calc_factorial(char - 1)
+  return 1
+
 #Works as an On and Off Switch. If equal sign is present, pop it out so error does not occur.
-def calculate(list, bool):
+def calculate(arithmetic, bool):
+
     if bool == True:
-        list.pop()
-    equation = ''.join(list)
+        arithmetic.pop()
+
+    if '!' in arithmetic:
+        stringclone = ''.join(arithmetic)
+        for chars in arithmetic:
+            if chars == '!':
+                tempolist = ''.join(arithmetic).split('!')
+                tempolist = list(tempolist[0])
+                for char in reversed(tempolist):
+                    try:
+                        int(char)
+                    except:
+                        tempolist = ''.join(tempolist).split(char)
+                        break
+    
+        sum =  str(calc_factorial(int(tempolist[(len(tempolist)-1)])))
+        stringclone = stringclone.replace(tempolist[(len(tempolist)-1)] + '!',sum )
+        answer = eval(stringclone)
+        print(answer)
+        equation = stringclone
+
+    equation = ''.join(arithmetic)
+
+    while 'sin' in arithmetic:
+        for things in arithmetic:
+            if things == 'sin':
+                sin = eval(str(equation.split('sin')[1]))
+                sintoinsert = arithmetic.index('sin')
+                arithmetic.pop(int(sintoinsert))
+                break
+        sin = str(round(math.sin(float(sin)),5))
+        arithmetic.insert(sintoinsert,sin)
+
+    equation = ''.join(arithmetic)
+
     try:
         equation = str(eval(equation))
         t.clear()
@@ -160,7 +198,6 @@ def button_pressed(x, y):
 
     write(line_list)
 
-
       #if characters go off screen:
     screencheck = screen_check(len(line_list))
     if screencheck == True:
@@ -200,4 +237,3 @@ def button_pressed(x, y):
 
 wn.onclick(button_pressed)
 wn.mainloop()
-
