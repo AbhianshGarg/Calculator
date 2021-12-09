@@ -1,4 +1,5 @@
 ##imports
+##imports
 import turtle as trtl
 import math
 
@@ -20,22 +21,24 @@ t.pencolor('white')
 t.goto(195, 150)
 t.pendown()
 
-#Used to cover 0 when button pressed.
-#wn.addshape('cover.gif')
-#cover.shape('cover.gif')
+#Used to cover 0
+wn.addshape('cover.gif')
+cover.shape('cover.gif')
 cover.speed(0)
 cover.penup()
-cover.goto(225, 225)
+cover.goto(225, 280)
 cover.pendown() 
-#cover.stamp()
+cover.stamp()
 
 ##Operator Function
-
-def write(button, mult):
-    t.pu()
-    t.goto(195 - 55*mult, 150)
-    t.pd() 
-    t.write(button, font=("Arial", 74, "bold"))
+def write(list):
+    mult = 0
+    for char in reversed(list):
+        t.pu()
+        t.goto(195 - 55*mult, 150)
+        t.pd() 
+        t.write(char, font=("Arial", 74, "bold"))
+        mult += 1
 
 def screen_check(mult):
   if 195 - 55*mult < -300:
@@ -43,9 +46,26 @@ def screen_check(mult):
   else:
     return False
 
+#Works as an On and Off Switch. If equal sign is present, pop it out so error does not occur.
+def calculate(list, bool):
+    if bool == True:
+        list.pop()
+    equation = ''.join(list)
+    try:
+        equation = str(eval(equation))
+        t.clear()
+        write(equation)
+    except SyntaxError:
+        t.clear()
+        t.pu()
+        t.goto(50, 150)
+        t.pendown()
+        t.write('Error', font=("Arial", 74, "bold"))
+    
     
 def button_pressed(x, y):
     global button, line_list
+    printed = True
     if 46 - 55*0 > y > 46 - 55*1:
         if -290 + 115*0 < x < -290 + 115*1:
             button = '1/x'
@@ -55,8 +75,10 @@ def button_pressed(x, y):
             button = 'log'
         elif -290 + 115*3 < x < -290 + 115*4:
             button = 'Clear'
+            printed = False
         elif -290 + 115*4 < x < -290 + 115*5:
             button = 'Delete'
+            printed = False
 
     if 46 - 55*1 > y > 46 - 55*2:
         if -290 + 115*0 < x < -290 + 115*1:
@@ -130,32 +152,52 @@ def button_pressed(x, y):
         elif -290 + 115*4 < x < -290 + 115*5:
             button = '=' #Equal
 
-    line_list.append(str(button))
-    #print(line_list)
-    print(line_list)
+    if printed != False:
+        line_list.append(str(button))
     t.clear()
-    mult1 = 0
-    for char in reversed(line_list):
-      write(char, mult1)
-      mult1 += 1
-      screencheck = screen_check(mult1)
 
-      mult2 = 0
-      if screencheck == True:
+    #writes characters clicked on screen.
+
+    write(line_list)
+
+
+      #if characters go off screen:
+    screencheck = screen_check(len(line_list))
+    if screencheck == True:
         t.clear()
         equation = ''.join(line_list)
         line_list = []
         try:
-          equation = int(equation)
-          break
-        except ValueError:
           equation = str(eval(equation))
+        except SyntaxError:
+          t.pu()
+          t.goto(50, 150)
+          t.pendown()
+          t.write('Error', font=("Arial", 74, "bold"))
           print(equation)
-        for tot in reversed(equation):
-          write(tot, mult2)
-          mult2 += 1 
+        write(line_list)
+
+
+    #Special signs.
+    if button == '=':
+        calculate(line_list, True)
+        line_list = []
+    
+    if button == 'Clear':
+        t.clear()
+        line_list = []
+    
+    if button == 'Delete':
+        t.clear()
+        print(line_list)
+        line_list.pop()
+        print(line_list)
+        write(line_list)
+
+    
 
 # Fix 1280+
 
 wn.onclick(button_pressed)
 wn.mainloop()
+
