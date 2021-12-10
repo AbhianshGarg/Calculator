@@ -107,7 +107,7 @@ def calculate(arithmetic, bool):
         equation = str(eval(equation))
         t.clear()
         write(equation)
-    except UnboundLocalError:
+    except SyntaxError:
         t.clear()
         t.pu()
         t.goto(50, 150)
