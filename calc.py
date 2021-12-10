@@ -33,11 +33,12 @@ cover.stamp()
 def write(list):
     mult = 0
     for char in reversed(list):
-        t.pu()
-        t.goto(195 - 55*mult, 150)
-        t.pd() 
-        t.write(char, font=("Arial", 74, "bold"))
-        mult += 1
+        for wt in reversed(char):
+            t.pu()
+            t.goto(195 - 55*mult, 150)
+            t.pd() 
+            t.write(wt, font=("Arial", 74, "bold"))
+            mult += 1
 
 def screen_check(mult):
   if 195 - 55*mult < -300:
@@ -50,12 +51,26 @@ def calc_factorial(char):
     return char * calc_factorial(char - 1)
   return 1
 
+def trigonomtry(equation, arithmetic, char):
+    trig = eval(str(equation.split(char)[1]))
+    trigtoinsert = arithmetic.index(char)
+    arithmetic.pop(int(trigtoinsert))
+    if char == 'sin':
+        trig = str(round(math.sin(float(trig)),5))
+    elif char == 'cos':
+        trig = str(round(math.cos(float(trig)),5))
+    elif char == 'tan':
+        trig = str(round(math.tan(float(trig)),5))
+    arithmetic.insert(trigtoinsert,str(trig))
+    return equation, arithmetic
+
 #Works as an On and Off Switch. If equal sign is present, pop it out so error does not occur.
 def calculate(arithmetic, bool):
 
     if bool == True:
         arithmetic.pop()
 
+    #Used for factorial. String manipulation.
     if '!' in arithmetic:
         stringclone = ''.join(arithmetic)
         for chars in arithmetic:
@@ -73,27 +88,26 @@ def calculate(arithmetic, bool):
         stringclone = stringclone.replace(tempolist[(len(tempolist)-1)] + '!',sum )
         answer = eval(stringclone)
         print(answer)
-        equation = stringclone
+        arithmetic = stringclone
 
     equation = ''.join(arithmetic)
-
-    while 'sin' in arithmetic:
-        for things in arithmetic:
-            if things == 'sin':
-                sin = eval(str(equation.split('sin')[1]))
-                sintoinsert = arithmetic.index('sin')
-                arithmetic.pop(int(sintoinsert))
-                break
-        sin = str(round(math.sin(float(sin)),5))
-        arithmetic.insert(sintoinsert,sin)
-
+    print(arithmetic)
+    trig = ['sin', 'cos', 'tan']
+    for char in trig:
+        print(char)
+        if char in arithmetic:
+            print(char)
+            equation, arithmetic = trigonomtry(equation, arithmetic, char)
+            print(equation, arithmetic)
+    print(equation, arithmetic)
     equation = ''.join(arithmetic)
 
     try:
+        print(equation)
         equation = str(eval(equation))
         t.clear()
         write(equation)
-    except SyntaxError:
+    except UnboundLocalError:
         t.clear()
         t.pu()
         t.goto(50, 150)
@@ -122,7 +136,7 @@ def button_pressed(x, y):
         if -290 + 115*0 < x < -290 + 115*1:
             button = 'sin'
         elif -290 + 115*1 < x < -290 + 115*2:
-            button = 'cosin'
+            button = 'cos'
         elif -290 + 115*2 < x < -290 + 115*3:
             button = 'tan'
         elif -290 + 115*3 < x < -290 + 115*4:
@@ -156,7 +170,7 @@ def button_pressed(x, y):
 
     if 46 - 55*4 > y > 46 - 55*5:
         if -290 + 115*0 < x < -290 + 115*1:
-            button = 'x^2' #Ten to the power of x
+            button = '**2' #Ten to the power of x
         elif -290 + 115*1 < x < -290 + 115*2:
             button = 4
         elif -290 + 115*2 < x < -290 + 115*3:
@@ -180,7 +194,7 @@ def button_pressed(x, y):
   
     if 46 - 55*6 > y > 46 - 55*7:
         if -290 + 115*0 < x < -290 + 115*1:
-            button = 'Natural Logarithm'
+            button = '**'
         elif -290 + 115*1 < x < -290 + 115*2:
             button = '-' #Negative
         elif -290 + 115*2 < x < -290 + 115*3:
