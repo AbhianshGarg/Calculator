@@ -1,4 +1,3 @@
-##imports
 import turtle as trtl
 import math
 
@@ -7,12 +6,15 @@ import math
 t = trtl.Turtle()
 cover = trtl.Turtle()
 graph = trtl.Turtle()
+calc_return = trtl.Turtle()
 wn = trtl.Screen()
 global line_list
 line_list = []
 
 wn.bgpic('calc.png')
 wn.setup(570, 696)
+
+#wn.addshape('return_to_calc.gif')
 
 cover.ht()
 
@@ -127,12 +129,15 @@ def graphing():
     wn.setup(1200, 600)
     wn.bgpic('graphingcalc.png')
     graphing_equation = ''.join(line_list)
-    for x in range(-400, 400, 40):
+    for x in range(-400, 400, 10):
       graphing_equation = ''.join(line_list)
-      print(str(x))
-      graphing_equation = graphing_equation.replace('x', str(x))
-      print(graphing_equation)
+      #print(str(x))
+      replace  = '(' + str(x) + ')'
+      print(replace)
+      graphing_equation = graphing_equation.replace('x', replace)
+      #print(graphing_equation)
       y = eval(graphing_equation)
+      #print(y)
       if x == -400:
         graph.penup()
         graph.goto(x*mult, y*mult)
@@ -140,11 +145,9 @@ def graphing():
       graph.goto(x*mult, y*mult)
     
 
-
-
     
 
-    
+
 #The code below is mimicking the layout of a rectangle divided by x lines on heigh and width. It then multiplys y by the row level and x but the colum level. 
 # After we determine and classify the button click and its position, we assign the button click to a value which corresponds to its click
 def button_pressed(x, y):
@@ -159,7 +162,7 @@ def button_pressed(x, y):
             graphing()
     if 46 - 55*0 > y > 46 - 55*1:
         if -290 + 115*0 < x < -290 + 115*1:
-            button = '1/x'
+            button = '1/'
         elif -290 + 115*1 < x < -290 + 115*2:
             button = 'Natural Logarithim'
         elif -290 + 115*2 < x < -290 + 115*3:
