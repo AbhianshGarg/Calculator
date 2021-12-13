@@ -285,6 +285,23 @@ def button_pressed(x, y):
         print(line_list)
         write(line_list)
 
+loading.speed(0)
+loading.ht()
+loading.shape('circle')
+rand = rand.randint(1, 50)
+for i in range(1, rand):
+    loading.penup()
+    loading.fd(50)
+    loading.pendown()
+    loading.stamp()
+    loading.penup()
+    loading.goto(0, 0)
+    loading.pendown()
+    loading.right(36)
+    rem = i%10
+    if rem == 0:
+        loading.clear()
+loading.clear()
 
 
 wn.bgpic('calc.png')
