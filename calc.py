@@ -1,39 +1,17 @@
 import turtle as trtl
 import math
+import random as rand
 
 
 ##initialization
 t = trtl.Turtle()
 cover = trtl.Turtle()
 graph = trtl.Turtle()
+loading = trtl.Turtle()
 calc_return = trtl.Turtle()
 wn = trtl.Screen()
 global line_list
 line_list = []
-
-wn.bgpic('calc.png')
-wn.setup(570, 696)
-
-#wn.addshape('return_to_calc.gif')
-
-cover.ht()
-
-t.penup()
-t.ht()
-t.pencolor('white')
-t.goto(195, 150)
-t.pendown()
-
-
-graph.speed(0)
-
-#Used to cover 0
-cover.speed(0)
-cover.penup()
-cover.goto(225, 280)
-cover.pendown() 
-cover.stamp()
-
 
 
 ##Operator Function
@@ -119,36 +97,51 @@ def calculate(arithmetic, bool):
     except Exception:
         t.clear() 
         t.pu()
-        t.goto(50, 150)
+        t.goto(0, 150)
         t.pendown()
+        t.pencolor('red')
         t.write('Error', font=("Arial", 74, "bold"))
+        t.pencolor('white')
 
 #This graphing function will switch the calculator mode to graphing and conduct all graphing operations
+def goback(x,y):
+    graph.ht()
+    graph.clear()
+    wn.setup(570, 696)
+    wn.bgpic('calc.png')
+    global line_list
+    line_list.clear()
+    print(line_list)
+    wn.onclick(button_pressed)
+
 def graphing():
     mult = 1.5
     wn.setup(1200, 600)
     wn.bgpic('graphingcalc.png')
+    for things in line_list:
+            if str(things) == '**2':
+              graph.pencolor('green')
+            else:
+              graph.pencolor('pink')
     graphing_equation = ''.join(line_list)
-    for x in range(-400, 400, 10):
+    for x in range(-400, 400, 4):
       graphing_equation = ''.join(line_list)
-      #print(str(x))
       replace  = '(' + str(x) + ')'
-      print(replace)
       graphing_equation = graphing_equation.replace('x', replace)
-      #print(graphing_equation)
       y = eval(graphing_equation)
-      #print(y)
       if x == -400:
         graph.penup()
         graph.goto(x*mult, y*mult)
         graph.pendown()
       graph.goto(x*mult, y*mult)
-    
+    graph.ht()
+    graph.shape('return_to_calc.gif')
+    graph.pu()
+    graph.goto(530, -250)
+    graph.st()
+    graph.onclick(goback)
 
-    
-
-
-#The code below is mimicking the layout of a rectangle divided by x lines on heigh and width. It then multiplys y by the row level and x but the colum level. 
+#The code below is mimicking the layout of a rectangle divided by x lines on heigh and width. It then multiplies y by the row level and x but the column level. 
 # After we determine and classify the button click and its position, we assign the button click to a value which corresponds to its click
 def button_pressed(x, y):
     global button, line_list
@@ -156,17 +149,19 @@ def button_pressed(x, y):
     NotEval = True
     if 55 < y < 100:
         if -270<x<-130:
-            button = 'Graphing'
+            button = ''
             NotEval = False
             printed = False
+            wn.onclick(None)
             graphing()
+            t.clear()
     if 46 - 55*0 > y > 46 - 55*1:
         if -290 + 115*0 < x < -290 + 115*1:
             button = '1/'
         elif -290 + 115*1 < x < -290 + 115*2:
-            button = 'Natural Logarithim'
+            button = '**(0.5)'
         elif -290 + 115*2 < x < -290 + 115*3:
-            button = 'log'
+            button = '**(1/3)'
         elif -290 + 115*3 < x < -290 + 115*4:
             button = 'Clear'
             printed = False
@@ -254,7 +249,7 @@ def button_pressed(x, y):
     write(line_list)
 
     #if characters go off screen:
-    #With this code, we can check and verify that the inputted equation does not go off of the screen, and if it does, the equation will be forced to be evaulted
+    #With this code, we can check and verify that the inputted equation does not go off of the screen, and if it does, the equation will be forced to be evaluated
     screencheck = screen_check(len(line_list))
     if screencheck == True:
         t.clear()
@@ -290,7 +285,31 @@ def button_pressed(x, y):
         print(line_list)
         write(line_list)
 
-    
+
+
+wn.bgpic('calc.png')
+wn.setup(570, 696)
+
+wn.addshape('return_to_calc.gif')
+
+cover.ht()
+
+t.penup()
+t.ht()
+t.pencolor('white')
+t.goto(195, 150)
+t.pendown()
+
+
+graph.speed(0)
+
+#Used to cover 0
+cover.speed(0)
+cover.penup()
+cover.goto(225, 280)
+cover.pendown() 
+cover.stamp()
 
 wn.onclick(button_pressed)
+
 wn.mainloop()
